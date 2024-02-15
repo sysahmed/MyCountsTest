@@ -1,0 +1,75 @@
+﻿@model MyCountsTest.Models.IndexViewModel
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+</head>
+<body>
+
+    <div class="container-fluid">
+        <div class="container">
+            <div class="row">
+                <h2>Header</h2>
+                <h5>Subheader</h5>
+                <button onclick="clearNumbers()" class="btn btn-success">Clear Numbers</button>
+                <button onclick="addNumber()" class="btn btn-success">Add Number</button>
+                <button onclick="sumNumbers()" class=" btn btn-success">Sum Numbers</button>
+
+                <ul id="numbersList">
+                    @foreach (var number in Model.Numbers)
+                    {
+                        <button>@number</button>
+                    }
+                </ul>
+            </div>
+
+            <p id="countNumbers">Count:0</p>
+            <div id="sumResult">
+                @Html.Partial("_SumPartial", Model.Count)
+            </div>
+        </div>
+</body>
+</html>
+<script>
+    var length = 0;
+    //фунлция addNumber  съсздай запис от число
+    function addNumber() {
+        console.log(length);
+        //тук се стартира екшъна в контролера AddNumber
+        $.post('/Home/AddNumber', function (data) {
+            //след това го резолва в View страницата
+            $('#numbersList').append('<button class="btn btn-success">' + data + '</button>');
+            //тук съсзадената променлива length присявоява към сбора си 1 при васяко стартиране на функцията
+            length++;
+            //след това се визуализира
+            $('#countNumbers').html('Count: ' + length);
+        });
+    }
+    //функцията clearNumbers  истрива записите и изчиства екрана
+
+    function clearNumbers() {
+        //променливата присвоява стойност 0
+        length = 0;
+        //тук се стартира екшъна в контролера ClearNumbers
+        $.post('/Home/ClearNumbers', function (data) {
+            //променя се айди numbersList с нул
+            $('#numbersList').html(' ');
+            //променя се се към айди sumResult data
+            $('#sumResult').html(data);
+            //променя се countNumbers вече нулирани данни
+            $('#countNumbers').html('Count: 0');
+        });
+    }
+
+    //функцията sumNumbers  истрива записите и изчиства екрана
+    function sumNumbers() {
+        //тук се стартира екшъна в контролера sumNumbers
+        $.post('/Home/SumNumbers', function (data) {
+            //присвоява се data сумиранта
+            $('#sumResult').html(data);
+        });
+    }
+</script>
+
+
+
